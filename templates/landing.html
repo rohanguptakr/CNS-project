@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FileCrypt</title>
+    <link rel="stylesheet" href="../static/landing.css">
+    <script src="https://cdn.lordicon.com/bhenfmcm.js"></script>
+</head>
+<body>
+    <div class="title-section">
+        <p class="title">FileCrypt</p>
+        <p>A place to secure your files!!</p>
+    </div>
+    <div class="select">
+        <p class="p-text">Pick what you want to Encrypt/Decrypt</p>
+        <div class="button-wrapper">
+            <div class="button" onclick="change_text_1()">
+                <lord-icon
+                    src="https://cdn.lordicon.com/kulwmpzs.json"
+                    trigger="hover"
+                    colors="primary:#000000"
+                    style="width:100px;height:100px;background-color: aliceblue;">
+                </lord-icon>
+                <div class="button-text">PDF</div>
+            </div>
+            <div class="button" onclick="change_text_2()">
+                <lord-icon
+                    src="https://cdn.lordicon.com/pnwpbzow.json"
+                    trigger="hover"
+                    colors="primary:#000000"
+                    style="width:100px;height:100px;background-color: aliceblue;">
+                </lord-icon>
+                <div class="button-text">Image</div>
+            </div>
+            <div class="button" onclick="change_text_3()">
+                <lord-icon
+                    src="https://cdn.lordicon.com/iiixgoqp.json"
+                    trigger="hover"
+                    colors="primary:#000000"
+                    style="width:100px;height:100px;background-color: aliceblue;">
+                </lord-icon>
+                <div class="button-text">Text/Word</div>
+            </div>
+        </div>
+        <div class="function-wrapper">
+            <p id="demo" class="p-text">Encrypt/Decrypt Text file</p>
+            <div class="function">
+                <div class="code">
+                    <p class="p-text">Encrypt</p>
+                    <form id="encryptionForm">
+                        <label for="inputFile" class="button-like">Select File</label>
+                        <input type="file" id="inputFile" name="inputFile" style="display: none" required><br><br>
+                        <button type="submit" class="button-like">Encrypt File</button>
+                      </form>
+                </div>
+                <div class="code">
+                    <div class="code">
+                        <p class="p-text">Decrypt</p>
+                        <form id="encryptionForm">
+                            <label for="inputFile" class="button-like">Select File</label>
+                            <input type="file" id="inputFile" name="inputFile" style="display: none" required><br><br>
+                            <button type="submit" class="button-like">Decrypt File</button>
+                          </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const fs = require('fs');
+const crypto = require('crypto');
+
+function change_text_1(){
+    document.getElementById("demo").innerHTML = "Encrypt/Decrypt PDF file";
+}
+function change_text_2(){
+    document.getElementById("demo").innerHTML = "Encrypt/Decrypt Image file";
+}
+function change_text_3(){
+    document.getElementById("demo").innerHTML = "Encrypt/Decrypt Text file";
+}
+
+document.getElementById('encryptionForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+  
+    // Get the input file from the form
+    const inputFile = document.getElementById('inputFile').files[0];
+  
+    // Call the function to encrypt the file with DES
+    encryptFileWithDES(inputFile);
+  });
+  
+  function encryptFileWithDES(file) {
+    // Read the contents of the file
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const fileData = event.target.result;
+  
+      // Generate a 64-bit key
+      const key = Buffer.from('0123456789ABCDEF', 'hex');
+  
+      // Create a DES cipher with the generated key
+      const cipher = crypto.createCipheriv('des', key, '');
+  
+      // Encrypt the file data
+      let encryptedData = cipher.update(fileData, 'utf8', 'hex');
+      encryptedData += cipher.final('hex');
+  
+      // Write the encrypted data back to the original file
+      fs.writeFileSync(file.path, encryptedData, 'hex');
+  
+      console.log('File encrypted successfully.');
+    };
+    reader.readAsText(file);
+  }
+    </script>
+</body>
+</html>
